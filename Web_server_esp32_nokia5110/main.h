@@ -4,23 +4,32 @@
 #include <WiFi.h>                                         //Connect lib.work wifi
 #include "SPIFFS.h"
 #include <ESPAsyncWebServer.h>
-
+/*LCD*/
+#include <Adafruit_GFX.h>
+#include <Adafruit_PCD8544.h>
 /*----------DEFINES----------*/
-#define Led 2
+#define D8 18          //Serial clock out (SCLK)
+#define D7 23          //Serial data out (DIN)
+#define D6 19          //Data/Command select (D/C)
+#define D5 5           //LCD chip select (CS)
+#define D2 14          //LCD reset (RST)
 /*----------VARIABLES----------*/
 AsyncWebServer server(80);
-
+Adafruit_PCD8544 display = Adafruit_PCD8544(D8, D7, D6, D5, D2);
 /*----------PROTOTYPE FUNCTIONS----------*/
 void start_config();                                      //Settings function  
 void connect_wifi();                                      //Function connect Wifi
 void notFound(AsyncWebServerRequest *request);
 void spiss_init();
 void server_send();
-void notFound(AsyncWebServerRequest *request);
+
 /*----------FUNKTIONS----------*/
 void start_config() {
   Serial.println("Start config mode");                    //Add function setting 
   connect_wifi();                                         //Function connect Wifi
+  display.begin();
+  display.setContrast(10);
+  display.clearDisplay();
 }
 void connect_wifi(){                                     //Create function connect wifi
   WiFi.softAP("ESP32", "");
@@ -41,11 +50,22 @@ void server_send(){
     request->send(SPIFFS, "/index.html", "text/html");
   });
   server.on("/led/on", HTTP_GET, [](AsyncWebServerRequest * request){ 
-    digitalWrite(Led, HIGH);
+//    digitalWrite(Led, HIGH);
+    display.setTextSize(2);
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(9,1);
+    display.println("X");
+    display.display();
     request->send(SPIFFS, "/index.html", "text/html");
   });
   server.on("/led/off", HTTP_GET, [](AsyncWebServerRequest * request){ 
-    digitalWrite(Led, LOW);
+//    digitalWrite(Led, LOW);
+    display.clearDisplay();
+    display.setTextSize(2);
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(9,1);
+    display.println("0");
+    display.display();
     request->send(SPIFFS, "/index.html", "text/html");
   });
   server.onNotFound(notFound);
