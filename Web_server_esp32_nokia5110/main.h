@@ -22,7 +22,8 @@ void connect_wifi();                                      //Function connect Wif
 void notFound(AsyncWebServerRequest *request);
 void spiss_init();
 void server_send();
-
+void vect();
+void goriz();
 /*----------FUNKTIONS----------*/
 void start_config() {
   Serial.println("Start config mode");                    //Add function setting 
@@ -74,4 +75,23 @@ void server_send(){
 void notFound(AsyncWebServerRequest *request){
   request->send(404, "text/plain", "Page not found");
 }
+
+void vect(){
+  for(int i = 0; i < 47; i++){
+    display.drawFastHLine(28,i,0,BLACK);
+    display.display();
+  }
+  for(int j = 0; j < 47; j++){
+    display.drawFastHLine(56,j,0,BLACK);
+    display.display();
+  }
+}
+
+void goriz(){
+  display.drawFastHLine(0,16,83,BLACK);
+  display.display();
+  display.drawFastHLine(0,32,83,BLACK);
+  display.display();
+}
+
 #endif

@@ -5,6 +5,8 @@ void setup(){
 
   start_config();
   spiss_init();
+  vect();
+  goriz();
   server_send();
 }
 
