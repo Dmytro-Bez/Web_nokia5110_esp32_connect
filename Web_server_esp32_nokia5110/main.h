@@ -29,7 +29,7 @@ void start_config() {
   Serial.println("Start config mode");                    //Add function setting 
   connect_wifi();                                         //Function connect Wifi
   display.begin();
-  display.setContrast(10);
+  display.setContrast(70);
   display.clearDisplay();
 }
 void connect_wifi(){                                     //Create function connect wifi
