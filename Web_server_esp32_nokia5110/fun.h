@@ -165,7 +165,7 @@ bool connect_to_wifi(){                                   //Create function conn
     Serial.print(".");
     retries++;
   }
-  Serial.println("!");
+  Serial.println("Connect!");
   if(WiFi.status() != WL_CONNECTED && !conf_button_pressed){                  //If we still couldn't connect to the WiFi, go to deep sleep for a minute and try again.
     esp_sleep_enable_timer_wakeup(1 * 10L * 1000000L);
     esp_deep_sleep_start();
@@ -239,9 +239,9 @@ void start_transfer(){
 void info_blink(int code_array[]){
   for (i=0; i<ERROR_CODE_SIZE; i++){
     code = code_array[i];
-    digitalWrite(INFO_LED_PIN, HIGH);                                                     // turn the LED on (HIGH is the voltage level)
+    digitalWrite(INFO_LED_PIN1, HIGH);                                                     // turn the LED on (HIGH is the voltage level)
     delay(code == ERROR_CODE_LONG?1000:500);                                              // wait for a second
-    digitalWrite(INFO_LED_PIN, LOW);                                                      // turn the LED off by making the voltage LOW
+    digitalWrite(INFO_LED_PIN1, LOW);                                                      // turn the LED off by making the voltage LOW
     delay(500); 
   }
   delay(2000); 

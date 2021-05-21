@@ -4,20 +4,18 @@ void setup(){
   Serial.begin(115200);
 
   pinMode(BUTTON_PIN,  INPUT_PULLUP);                                                   //Initialize the button and LED indicator
-  pinMode(INFO_LED_PIN,OUTPUT);                                                         //Initialize the button and BUTTON
+  pinMode(INFO_LED_PIN1,OUTPUT);                                                         //Initialize the button and BUTTON
+  pinMode(INFO_LED_PIN2,OUTPUT);                                                         //Initialize the button and BUTTON
   attachInterrupt(BUTTON_PIN, isr, FALLING);
 
-  if (String(conf_wifi_ssid) == "" ||  String(conf_wifi_password) == ""){               //if we don't have credentials to wifi then lets start ble for initialization
-    start_config();
-    vect();
-    horiz();
+  start_config();
+  vect();
+  horiz();
   
-    pr_win();
+  pr_win();
 //  return_game();
 //  server_send();
-  } else {   
-    start_transfer();
-  }
+//    start_transfer();
 }
 
 void loop(){
@@ -33,7 +31,6 @@ void loop(){
       break;
   }
   if(conf_button_pressed){               //Activation button pressed
-    start_config();
-    send_data_to_aws();
+
   } 
 }
