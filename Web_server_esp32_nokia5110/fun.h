@@ -30,11 +30,14 @@ void ScanObjectTemp();                                    //Function of reading 
 /*----------FUNKTIONS----------*/
 void start_config() {
   Serial.println("Start config mode");                    //Add function setting 
-  connect_to_wifi();                                         //Function connect Wifi
+  
   display.begin();                                        //Init display
   display.setContrast(70);                                //Contrast
   display.clearDisplay();                                 //Clear display
+  vect();
+  horiz();
   pr_win();                                               //Testing win
+  start_transfer();                                       //Function transfer
 }
 
 void vect(){                                              //Create function vertical
@@ -160,17 +163,17 @@ bool connect_to_wifi(){                                   //Create function conn
   WiFi.mode(WIFI_STA);
   WiFi.begin(conf_wifi_ssid, conf_wifi_password);
   int retries = 0;                                        //Only try $max_connect_attempts times to connect to the WiFi
-  while(WiFi.status() != WL_CONNECTED && retries < max_connect_attempts && !conf_button_pressed){
+  while(WiFi.status() != WL_CONNECTED && retries < max_connect_attempts){
     delay(500);
     Serial.print(".");
     retries++;
   }
   Serial.println("Connect!");
-  if(WiFi.status() != WL_CONNECTED && !conf_button_pressed){                  //If we still couldn't connect to the WiFi, go to deep sleep for a minute and try again.
+  if(WiFi.status() != WL_CONNECTED){                  //If we still couldn't connect to the WiFi, go to deep sleep for a minute and try again.
     esp_sleep_enable_timer_wakeup(1 * 10L * 1000000L);
     esp_deep_sleep_start();
     c_status = false;
-  } else if(!conf_button_pressed){
+  } else {
     c_status = true;
   }
   return c_status;
@@ -185,7 +188,7 @@ bool connect_to_aws(){
   client.begin(AWS_IOT_ENDPOINT, 8883, net);                                  //Connect to the MQTT broker on the AWS endpoint we defined earlier
   int retries = 0;
   Serial.println("Connecting to AWS IOT");                                    //Try to connect to AWS and count how many times we retried.
-  while(!client.connect(DEVICE_NAME) && retries < AWS_MAX_RECONNECT_TRIES && !conf_button_pressed){
+  while(!client.connect(DEVICE_NAME) && retries < AWS_MAX_RECONNECT_TRIES){
     Serial.print("-");
     delay(1000);
     retries++;
@@ -222,7 +225,6 @@ void message_handler(String &topic, String &payload){
 }
 
 void start_transfer(){  
-  conf_button_pressed = false;
   if (!connect_to_wifi()){
     a_status = WIFI_ERROR;
     Serial.println("Failed connecting to wi-fi");

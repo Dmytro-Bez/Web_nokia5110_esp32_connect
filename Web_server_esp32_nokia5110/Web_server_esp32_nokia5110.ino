@@ -9,10 +9,6 @@ void setup(){
   attachInterrupt(BUTTON_PIN, isr, FALLING);
 
   start_config();
-  vect();
-  horiz();
-  
-  pr_win();
 //  return_game();
 //  server_send();
 //    start_transfer();
