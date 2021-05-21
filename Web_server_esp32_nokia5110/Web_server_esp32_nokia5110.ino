@@ -1,4 +1,4 @@
-#include "main.h"
+#include "fun.h"
 
 void setup(){
   Serial.begin(115200);
@@ -7,8 +7,8 @@ void setup(){
   vect();
   goriz();
   
-//  pr_win();
-  return_game();
+  pr_win();
+//  return_game();
 //  server_send();
 }
 

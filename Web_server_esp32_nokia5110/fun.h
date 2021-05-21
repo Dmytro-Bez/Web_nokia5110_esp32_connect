@@ -2,30 +2,12 @@
 #define funk_h
 
 #include "def.h"
-#include <WiFi.h>                                         //Connect lib.work wifi
-#include "SPIFFS.h"
-#include <ESPAsyncWebServer.h>
+#include "inc.h"
+#include "var.h"
 
-/*----------LCD--------------*/
-#include <Adafruit_GFX.h>
-#include <Adafruit_PCD8544.h>
-/*----------DEFINES----------*/
-//#define D8 18          //Serial clock out (SCLK)
-//#define D7 23          //Serial data out (DIN)
-//#define D6 19          //Data/Command select (D/C)
-//#define D5 5           //LCD chip select (CS)
-//#define D2 14          //LCD reset (RST)
-//#define SIZE 3         //size arr
-/*----------VARIABLES----------*/
-bool O_win = false;                                       //Variable win '0'
-bool X_win = false;                                       //Variable win 'X'
-int Array[SIZE][SIZE] = {{0,0,0}, {0,1,0}, {0,0,1}};      //Create test array
-
-AsyncWebServer server(80);
 Adafruit_PCD8544 display = Adafruit_PCD8544(D8, D7, D6, D5, D2);
 /*----------PROTOTYPE FUNCTIONS----------*/
 void start_config();                                      //Settings function  
-void connect_wifi();                                      //Function connect Wifi
 void vect();
 void goriz();
 bool matrix_check();
@@ -35,18 +17,11 @@ void return_game();
 /*----------FUNKTIONS----------*/
 void start_config() {
   Serial.println("Start config mode");                    //Add function setting 
-  connect_wifi();                                         //Function connect Wifi
+  //connect_wifi();                                         //Function connect Wifi
   display.begin();
   display.setContrast(70);
   display.clearDisplay();
   pr_win();                                           //Testing win
-}
-
-void connect_wifi(){                                     //Create function connect wifi
-  WiFi.softAP("ESP32", "");
-  Serial.println("softAP");
-  Serial.println("");
-  Serial.println(WiFi.softAPIP());
 }
 
 void vect(){
