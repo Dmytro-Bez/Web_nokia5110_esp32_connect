@@ -7,6 +7,7 @@ bool X_win = false;                                       //Variable win 'X'
 int Array[SIZE][SIZE] = {{0,0,0}, {0,1,0}, {0,0,1}};      //Create test array
 int i;
 int code;
+unsigned long timing;
 
 int WIFI_ERROR_CODE[ERROR_CODE_SIZE] = {ERROR_CODE_LONG, ERROR_CODE_LONG, ERROR_CODE_LONG, ERROR_CODE_LONG};
 int AWS_ERROR_CODE[ERROR_CODE_SIZE] = {ERROR_CODE_LONG, ERROR_CODE_LONG, ERROR_CODE_SHORT, ERROR_CODE_LONG};
@@ -27,5 +28,6 @@ typedef enum {
 app_status a_status;
 
 bool conf_button_pressed = false;
+int buttonState = 0;
 
 #endif

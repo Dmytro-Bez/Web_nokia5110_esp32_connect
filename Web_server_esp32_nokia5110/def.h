@@ -12,9 +12,9 @@
 #define AWS_IOT_ENDPOINT "***"              //The MQTTT endpoint for the device (unique for each AWS account but shared amongst devices within the account)
 #define AWS_IOT_TOPIC "/"+ DEVICE_NAME+ "/comand"                       //The MQTT topic that this device should publish to
 #define BUTTON_PIN 4                                                    //button pin
-#define INFO_LED_PIN1 2                                                  //(RED)led pin
-#define INFO_LED_PIN2 3                                                  //(Yellow)led pin
-#define AWS_MAX_RECONNECT_TRIES 50  
+#define INFO_LED_PIN1 2                                                 //(RED)led pin
+#define INFO_LED_PIN2 15                                                //(Yellow)led pin
+#define AWS_MAX_RECONNECT_TRIES 10  
 #define ERROR_CODE_SIZE 4                                               //led blinker and parameter is array of ERROR_CODE_SIZE items 
 #define ERROR_CODE_LONG 0                                               //where ERROR_CODE_LONG long light and ERROR_CODE_SHORT is short light
 #define ERROR_CODE_SHORT 1                                              //error

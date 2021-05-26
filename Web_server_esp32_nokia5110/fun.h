@@ -25,7 +25,6 @@ void message_handler(String &topic, String &payload);     //Forming a letter to 
 void start_transfer();                                    //Starts wifi and connects to aws to start transfering data
 void info_blink(int code_array[]);                        //Indication and data transmission 
 void IRAM_ATTR isr();                                     //Button interuption funtion
-void ScanObjectTemp();                                    //Function of reading data from the D6T sensor
 
 /*----------FUNKTIONS----------*/
 void start_config() {
@@ -58,105 +57,6 @@ void horiz(){                                             //Create function hori
   display.display();
 }
 
-void move_win(){                                          //Create function move win
-  if(O_win){
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(BLACK, WHITE);
-    display.setCursor(0,0);
-    display.println("User won: 0");
-    display.display();
-  } else {
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(BLACK, WHITE);
-    display.setCursor(1,1);        
-    display.print("User won: X");
-    display.display();
-  } 
-}
-
-bool matrix_check(){                                      //Create function matrix check
-  bool status_arr = false;
-  
-  for(int i = 0; i < 3; i++){                             //Check the horizontals of the diagonals
-    if((Array[0][i] == Array[1][i]) && (Array[0][i] == Array[2][i])) {
-      if(Array[0][i] == 0){
-        O_win = true;
-        status_arr = true;
-      }
-        else if(Array[0][i] == 1){
-          X_win = true;
-          status_arr = true;
-        }
-    }
-    for(int j = 0; j < 3; j++){                           //Check the verticals of the diagonal
-      if((Array[j][0] == Array[j][1]) && (Array[j][0] == Array[j][2])) {
-        if(Array[j][0] == 0){
-          O_win = true;
-          status_arr = true; 
-        }
-          else if(Array[j][0] == 1){
-            X_win = true;
-            status_arr = true;
-          }
-        }
-      }
-    }
-    if ((Array[0][0] == Array[1][1]) && (Array[1][1] == Array[2][2])) {   //Check the winning diagonals
-      if (Array[0][0] == 0){
-        O_win = true;
-        status_arr = true; 
-      }
-      else if (Array[0][0] == 1){
-        X_win = true;
-        status_arr = true;
-      }
-    }
-    if((Array[0][2] == Array[1][1]) && (Array[1][1] == Array[2][0])) {    //Check the winning diagonals
-      if(Array[0][2] == 0){
-        O_win = true;
-        status_arr = true; 
-      }
-      else if (Array[0][2] == 1){
-        X_win = true;
-      }
-    }
-    //Serial.print(status_arr);
-    return status_arr; 
-}
-
-void pr_win(){                                            //Create function printing win
-  display.setTextSize(1);
-  display.setTextColor(BLACK, WHITE);
-  for(int i = 0; i < SIZE; i++){                          //Create cycle in cycle to fill
-    for(int j = 0; j < SIZE; j++){
-      if(Array[j][i] == 0){
-        display.setCursor(12+i*28,6+j*15);             
-        display.println("0"); 
-        display.display();
-      } else if(Array[j][i] == 1){
-        display.setCursor(12+i*28,6+j*15);             
-        display.println("X");
-        display.display();
-      }
-    }
-  }
-}
-
-void return_game(){                                       //Create function return game
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(BLACK, WHITE);      
-  display.setCursor(0,0);             
-  display.println("Start a new");
-  display.print("game!");
-  display.setCursor(0,20); 
-  display.println("Please.");
-  display.println("!!!"); 
-  display.display();
-}
-
 bool connect_to_wifi(){                                   //Create function connect wifi
   bool c_status = false;
   
@@ -168,7 +68,7 @@ bool connect_to_wifi(){                                   //Create function conn
     Serial.print(".");
     retries++;
   }
-  Serial.println("Connect!");
+  Serial.println("not!");
   if(WiFi.status() != WL_CONNECTED){                  //If we still couldn't connect to the WiFi, go to deep sleep for a minute and try again.
     esp_sleep_enable_timer_wakeup(1 * 10L * 1000000L);
     esp_deep_sleep_start();
@@ -239,18 +139,118 @@ void start_transfer(){
 }
 
 void info_blink(int code_array[]){
-  for (i=0; i<ERROR_CODE_SIZE; i++){
-    code = code_array[i];
-    digitalWrite(INFO_LED_PIN1, HIGH);                                                     // turn the LED on (HIGH is the voltage level)
-    delay(code == ERROR_CODE_LONG?1000:500);                                              // wait for a second
-    digitalWrite(INFO_LED_PIN1, LOW);                                                      // turn the LED off by making the voltage LOW
-    delay(500); 
-  }
-  delay(2000); 
+  if (millis() - timing > 2000){
+    timing = millis(); 
+    for (i=0; i<ERROR_CODE_SIZE; i++){
+      code = code_array[i];
+      digitalWrite(INFO_LED_PIN1, HIGH);                                                     // turn the LED on (HIGH is the voltage level)
+      delay(code == ERROR_CODE_LONG?1000:500);                                              // wait for a second
+      digitalWrite(INFO_LED_PIN1, LOW);                                                      // turn the LED off by making the voltage LOW
+      delay(500); 
+    }
+  //delay(2000);
+  } 
 }
 
 void IRAM_ATTR isr() {
   conf_button_pressed = true;
 }
 
+void pr_win(){                                            //Create function printing win
+  display.setTextSize(1);
+  display.setTextColor(BLACK, WHITE);
+  for(int i = 0; i < SIZE; i++){                          //Create cycle in cycle to fill
+    for(int j = 0; j < SIZE; j++){
+      if(Array[j][i] == 0){
+        display.setCursor(12+i*28,6+j*15);             
+        display.println("0"); 
+        display.display();
+      } else if(Array[j][i] == 1){
+        display.setCursor(12+i*28,6+j*15);             
+        display.println("X");
+        display.display();
+      }
+    }
+  }
+}
+//
+//void return_game(){                                       //Create function return game
+//  display.clearDisplay();
+//  display.setTextSize(1);
+//  display.setTextColor(BLACK, WHITE);      
+//  display.setCursor(0,0);             
+//  display.println("Start a new");
+//  display.print("game!");
+//  display.setCursor(0,20); 
+//  display.println("Please.");
+//  display.println("!!!"); 
+//  display.display();
+//}
+//
+//bool matrix_check(){                                      //Create function matrix check
+//  bool status_arr = false;
+//  
+//  for(int i = 0; i < 3; i++){                             //Check the horizontals of the diagonals
+//    if((Array[0][i] == Array[1][i]) && (Array[0][i] == Array[2][i])) {
+//      if(Array[0][i] == 0){
+//        O_win = true;
+//        status_arr = true;
+//      }
+//        else if(Array[0][i] == 1){
+//          X_win = true;
+//          status_arr = true;
+//        }
+//    }
+//    for(int j = 0; j < 3; j++){                           //Check the verticals of the diagonal
+//      if((Array[j][0] == Array[j][1]) && (Array[j][0] == Array[j][2])) {
+//        if(Array[j][0] == 0){
+//          O_win = true;
+//          status_arr = true; 
+//        }
+//          else if(Array[j][0] == 1){
+//            X_win = true;
+//            status_arr = true;
+//          }
+//        }
+//      }
+//    }
+//    if ((Array[0][0] == Array[1][1]) && (Array[1][1] == Array[2][2])) {   //Check the winning diagonals
+//      if (Array[0][0] == 0){
+//        O_win = true;
+//        status_arr = true; 
+//      }
+//      else if (Array[0][0] == 1){
+//        X_win = true;
+//        status_arr = true;
+//      }
+//    }
+//    if((Array[0][2] == Array[1][1]) && (Array[1][1] == Array[2][0])) {    //Check the winning diagonals
+//      if(Array[0][2] == 0){
+//        O_win = true;
+//        status_arr = true; 
+//      }
+//      else if (Array[0][2] == 1){
+//        X_win = true;
+//      }
+//    }
+//    //Serial.print(status_arr);
+//    return status_arr; 
+//}
+//void move_win(){                                          //Create function move win
+//  if(O_win){
+//    display.clearDisplay();
+//    display.setTextSize(1);
+//    display.setTextColor(BLACK, WHITE);
+//    display.setCursor(0,0);
+//    display.println("User won: 0");
+//    display.display();
+//  } else {
+//    display.clearDisplay();
+//    display.setTextSize(1);
+//    display.setTextColor(BLACK, WHITE);
+//    display.setCursor(1,1);        
+//    display.print("User won: X");
+//    display.display();
+//  } 
+//}
 #endif
